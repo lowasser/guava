@@ -32,6 +32,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.Spliterator;
 
 import javax.annotation.Nullable;
 
@@ -56,6 +57,12 @@ final class RegularImmutableSortedSet<E> extends ImmutableSortedSet<E> {
 
   @Override public UnmodifiableIterator<E> iterator() {
     return elements.iterator();
+  }
+
+  @Override
+  public Spliterator<E> spliterator() {
+    return new IndexedSpliterator<E>(
+        size(), elements::get, comparator, ImmutableSortedSet.SPLITERATOR_CHARACTERISTICS);
   }
 
   @GwtIncompatible("NavigableSet")

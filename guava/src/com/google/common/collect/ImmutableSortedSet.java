@@ -32,6 +32,10 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NavigableSet;
 import java.util.SortedSet;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.Spliterators.AbstractSpliterator;
+import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
@@ -58,6 +62,9 @@ import javax.annotation.Nullable;
 @SuppressWarnings("serial") // we're overriding default serialization
 public abstract class ImmutableSortedSet<E> extends ImmutableSortedSetFauxverideShim<E>
     implements NavigableSet<E>, SortedIterable<E> {
+  
+  static final int SPLITERATOR_CHARACTERISTICS = 
+      ImmutableSet.SPLITERATOR_CHARACTERISTICS | Spliterator.SORTED;
 
   private static final Comparator<Comparable> NATURAL_ORDER = Ordering.natural();
 
@@ -551,6 +558,33 @@ public abstract class ImmutableSortedSet<E> extends ImmutableSortedSetFauxveride
 
   @Override // needed to unify the iterator() methods in Collection and SortedIterable
   public abstract UnmodifiableIterator<E> iterator();
+
+  @Override
+  public Spliterator<E> spliterator() {
+    return new Spliterators.AbstractSpliterator<E>(size(), SPLITERATOR_CHARACTERISTICS) {
+      final UnmodifiableIterator<E> iterator = ImmutableSortedSet.this.iterator();
+
+      @Override
+      public boolean tryAdvance(Consumer<? super E> action) {
+        if (iterator.hasNext()) {
+          action.accept(iterator.next());
+          return true;
+        } else {
+          return false;
+        }
+      }
+
+      @Override
+      public void forEachRemaining(Consumer<? super E> action) {
+        iterator.forEachRemaining(action);
+      }
+
+      @Override
+      public Comparator<? super E> getComparator() {
+        return ImmutableSortedSet.this.comparator;
+      }
+    };
+  }
 
   /**
    * {@inheritDoc}
