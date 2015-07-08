@@ -24,8 +24,6 @@ import static com.google.common.collect.ObjectArrays.checkElementsNotNull;
 import static com.google.common.collect.RegularImmutableList.EMPTY;
 
 import com.google.common.annotations.GwtCompatible;
-import com.google.common.collect.ImmutableCollection.ArrayBasedBuilder;
-import com.google.common.collect.ImmutableCollection.Builder;
 
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
@@ -35,8 +33,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.RandomAccess;
+import java.util.Spliterator;
 import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -351,6 +349,13 @@ public abstract class ImmutableList<E> extends ImmutableCollection<E>
         return ImmutableList.this.get(index);
       }
     };
+  }
+
+  @Override
+  public Spliterator<E> spliterator() {
+    return new IndexedSpliterator<E>(size(), this::get, 
+        Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.ORDERED
+            | Spliterator.SUBSIZED | Spliterator.SIZED);
   }
 
   @Override

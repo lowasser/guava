@@ -19,6 +19,9 @@ package com.google.common.collect;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.base.Preconditions;
 
+import java.util.Spliterator;
+import java.util.Spliterators;
+
 /**
  * Implementation of {@link ImmutableList} used for 0 or 2+ elements (not 1).
  *
@@ -65,6 +68,14 @@ class RegularImmutableList<E> extends ImmutableList<E> {
   public E get(int index) {
     Preconditions.checkElementIndex(index, size);
     return (E) array[index + offset];
+  }
+
+  @Override
+  public Spliterator<E> spliterator() {
+    // TODO(lowasser): consider a singleton empty spliterator
+    return Spliterators.spliterator(array, offset, offset + size,
+        Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.ORDERED | Spliterator.SIZED
+        | Spliterator.SUBSIZED);
   }
 
   @Override
