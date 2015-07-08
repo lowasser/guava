@@ -29,8 +29,10 @@ import com.google.j2objc.annotations.WeakOuter;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.SortedMap;
+import java.util.Spliterator;
 import java.util.TreeMap;
 
 import javax.annotation.Nullable;
@@ -554,11 +556,23 @@ public final class ImmutableSortedMap<K, V> extends ImmutableSortedMapFauxveride
       }
 
       @Override
+      public Spliterator<Entry<K, V>> spliterator() {
+        return asList().spliterator();
+      }
+
+      @Override
       ImmutableList<Entry<K, V>> createAsList() {
         return new ImmutableAsList<Entry<K, V>>() {
           @Override
           public Entry<K, V> get(int index) {
             return Maps.immutableEntry(keySet.asList().get(index), valueList.get(index));
+          }
+
+          @Override
+          public Spliterator<Entry<K, V>> spliterator() {
+            return new IndexedSpliterator<>(size(), this::get,
+                Comparator.comparing(Entry<K, V>::getKey, comparator()),
+                ImmutableSortedSet.SPLITERATOR_CHARACTERISTICS);
           }
 
           @Override
