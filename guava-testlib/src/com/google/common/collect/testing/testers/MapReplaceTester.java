@@ -27,21 +27,17 @@ import com.google.common.collect.testing.AbstractMapTester;
 import com.google.common.collect.testing.features.CollectionSize;
 import com.google.common.collect.testing.features.MapFeature;
 
-import java.util.concurrent.ConcurrentMap;
+import java.util.Map;
 
 /**
- * A generic JUnit test which tests {@code replace(K, V)} operations on a concurrent map. Can't be
+ * A generic JUnit test which tests {@link Map#replace(Object, Object)}. Can't be
  * invoked directly; please see
- * {@link com.google.common.collect.testing.ConcurrentMapTestSuiteBuilder}.
+ * {@link com.google.common.collect.testing.MapTestSuiteBuilder}.
  * 
  * @author Louis Wasserman
  */
 @GwtCompatible
-public class ConcurrentMapReplaceTester<K, V> extends AbstractMapTester<K, V> {
-  @Override
-  protected ConcurrentMap<K, V> getMap() {
-    return (ConcurrentMap<K, V>) super.getMap();
-  }
+public class MapReplaceTester<K, V> extends AbstractMapTester<K, V> {
 
   @MapFeature.Require(SUPPORTS_PUT)
   @CollectionSize.Require(absent = ZERO)

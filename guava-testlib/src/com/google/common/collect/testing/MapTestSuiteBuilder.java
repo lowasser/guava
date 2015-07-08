@@ -38,6 +38,7 @@ import com.google.common.collect.testing.testers.MapPutIfAbsentTester;
 import com.google.common.collect.testing.testers.MapPutTester;
 import com.google.common.collect.testing.testers.MapRemoveEntryTester;
 import com.google.common.collect.testing.testers.MapRemoveTester;
+import com.google.common.collect.testing.testers.MapReplaceTester;
 import com.google.common.collect.testing.testers.MapSerializationTester;
 import com.google.common.collect.testing.testers.MapSizeTester;
 import com.google.common.collect.testing.testers.MapToStringTester;
@@ -83,6 +84,7 @@ public class MapTestSuiteBuilder<K, V>
         MapPutIfAbsentTester.class,
         MapRemoveEntryTester.class,
         MapRemoveTester.class,
+        MapReplaceTester.class,
         MapSerializationTester.class,
         MapSizeTester.class,
         MapToStringTester.class
