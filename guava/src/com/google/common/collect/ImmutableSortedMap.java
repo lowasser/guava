@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.function.BiConsumer;
 
 import javax.annotation.Nullable;
 
@@ -574,6 +575,16 @@ public final class ImmutableSortedMap<K, V> extends ImmutableSortedMapFauxveride
       }
     }
     return isEmpty() ? ImmutableSet.<Entry<K, V>>of() : new EntrySet();
+  }
+
+  @Override
+  public void forEach(BiConsumer<? super K, ? super V> action) {
+    checkNotNull(action);
+    for (int i = 0; i < size(); i++) {
+      action.accept(
+          keySet.asList().get(i),
+          valueList.get(i));
+    }
   }
 
   /**
