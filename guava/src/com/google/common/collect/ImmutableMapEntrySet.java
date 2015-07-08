@@ -22,6 +22,8 @@ import com.google.j2objc.annotations.Weak;
 
 import java.io.Serializable;
 import java.util.Map.Entry;
+import java.util.Spliterator;
+import java.util.Spliterators;
 
 import javax.annotation.Nullable;
 
@@ -50,6 +52,11 @@ abstract class ImmutableMapEntrySet<K, V> extends ImmutableSet<Entry<K, V>> {
     @Override
     public UnmodifiableIterator<Entry<K, V>> iterator() {
       return asList().iterator();
+    }
+
+    @Override
+    public Spliterator<Entry<K, V>> spliterator() {
+      return Spliterators.spliterator(entries, ImmutableSet.SPLITERATOR_CHARACTERISTICS);
     }
 
     @Override
