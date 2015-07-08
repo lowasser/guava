@@ -241,7 +241,7 @@ public abstract class ImmutableSet<E> extends ImmutableCollection<E> implements 
         return set;
       }
     } else if (elements instanceof EnumSet) {
-      return copyOfEnumSet((EnumSet) elements);
+      return ImmutableEnumSet.asImmutable(EnumSet.copyOf((EnumSet) elements));
     }
     Object[] array = elements.toArray();
     return construct(array.length, array);
@@ -303,10 +303,6 @@ public abstract class ImmutableSet<E> extends ImmutableCollection<E> implements 
       default:
         return construct(elements.length, elements.clone());
     }
-  }
-
-  private static <E extends Enum<E>> ImmutableSet<E> copyOfEnumSet(EnumSet<E> enumSet) {
-    return ImmutableEnumSet.asImmutable(EnumSet.copyOf(enumSet));
   }
 
   ImmutableSet() {}
