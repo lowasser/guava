@@ -31,6 +31,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.NavigableMap;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -82,12 +83,19 @@ public final class DerivedCollectionGenerators {
 
   // TODO: investigate some API changes to SampleElements that would tidy up
   // parts of the following classes.
+  
+  /**
+   * Uses navigableKeySet if the map is navigable.
+   */
+  private static <K> Set<K> keySet(Map<K, ?> map) {
+    return (map instanceof NavigableMap) ? ((NavigableMap<K, ?>) map).navigableKeySet() : map.keySet();
+  }
 
   static <K, V> TestSetGenerator<K> keySetGenerator(
       OneSizeTestContainerGenerator<Map<K, V>, Map.Entry<K, V>> mapGenerator) {
     TestContainerGenerator<Map<K, V>, Entry<K, V>> generator = mapGenerator.getInnerGenerator();
     if (generator instanceof TestSortedMapGenerator
-        && ((TestSortedMapGenerator<K, V>) generator).create().keySet() instanceof SortedSet) {
+        && keySet(((TestSortedMapGenerator<K, V>) generator).create()) instanceof SortedSet) {
       return new MapSortedKeySetGenerator<K, V>(mapGenerator);
     } else {
       return new MapKeySetGenerator<K, V>(mapGenerator);
@@ -136,7 +144,7 @@ public final class DerivedCollectionGenerators {
         entries.add(Helpers.mapEntry(keysArray[i++], entry.getValue()));
       }
 
-      return mapGenerator.create(entries.toArray()).keySet();
+      return keySet(mapGenerator.create(entries.toArray()));
     }
 
     @Override
