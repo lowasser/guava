@@ -21,6 +21,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.base.Preconditions;
 
+import java.util.Spliterator;
+
 /**
  * Implementation of {@link ImmutableList} with exactly one element.
  *
@@ -44,6 +46,11 @@ final class SingletonImmutableList<E> extends ImmutableList<E> {
 
   @Override public UnmodifiableIterator<E> iterator() {
     return Iterators.singletonIterator(element);
+  }
+
+  @Override
+  public Spliterator<E> spliterator() {
+    return new SingletonSpliterator<E>(element);
   }
 
   @Override
