@@ -29,6 +29,7 @@ import com.google.common.collect.testing.google.SetGenerators.DegeneratedImmutab
 import com.google.common.collect.testing.google.SetGenerators.ImmutableSetAsListGenerator;
 import com.google.common.collect.testing.google.SetGenerators.ImmutableSetCopyOfGenerator;
 import com.google.common.collect.testing.google.SetGenerators.ImmutableSetWithBadHashesGenerator;
+import com.google.common.testing.CollectorTester;
 import com.google.common.testing.EqualsTester;
 
 import junit.framework.Test;
@@ -38,6 +39,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.function.BiPredicate;
 
 /**
  * Unit test for {@link ImmutableSet}.
@@ -160,6 +162,14 @@ public class ImmutableSetTest extends AbstractImmutableSetTest {
     String[] array = new String[] { "a" };
     Set<String[]> set = ImmutableSet.<String[]>of(array);
     assertEquals(Collections.singleton(array), set);
+  }
+  
+  public void testToImmutableSet() {
+    BiPredicate<ImmutableSet<Integer>, ImmutableSet<Integer>> equivalence =
+        (set1, set2) -> set1.equals(set2) && set1.asList().equals(set2.asList());
+    CollectorTester.of(ImmutableSet.<Integer>toImmutableSet(), equivalence)
+        .expectCollects(ImmutableSet.of(1, 2, 3), 1, 2, 3)
+        .expectCollects(ImmutableSet.of(1, 2, 3), 1, 2, 1, 3, 2);
   }
 
   @GwtIncompatible("ImmutableSet.chooseTableSize")

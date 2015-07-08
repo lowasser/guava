@@ -88,19 +88,36 @@ public class NavigableMapTestSuiteBuilder<K, V> extends SortedMapTestSuiteBuilde
     @Override NavigableMap<K, V> createSubMap(SortedMap<K, V> sortedMap, K firstExclusive,
         K lastExclusive) {
       NavigableMap<K, V> map = (NavigableMap<K, V>) sortedMap;
-      if (from == Bound.NO_BOUND && to == Bound.INCLUSIVE) {
-        return map.headMap(lastInclusive, true);
-      } else if (from == Bound.EXCLUSIVE && to == Bound.NO_BOUND) {
-        return map.tailMap(firstExclusive, false);
-      } else if (from == Bound.EXCLUSIVE && to == Bound.EXCLUSIVE) {
-        return map.subMap(firstExclusive, false, lastExclusive, false);
-      } else if (from == Bound.EXCLUSIVE && to == Bound.INCLUSIVE) {
-        return map.subMap(firstExclusive, false, lastInclusive, true);
-      } else if (from == Bound.INCLUSIVE && to == Bound.INCLUSIVE) {
-        return map.subMap(firstInclusive, true, lastInclusive, true);
-      } else {
-        return (NavigableMap<K, V>) super.createSubMap(map, firstExclusive, lastExclusive);
+      switch (from) {
+        case NO_BOUND:
+          switch (to) {
+            case NO_BOUND:
+              return map;
+            case EXCLUSIVE:
+              return map.headMap(lastExclusive, false);
+            case INCLUSIVE:
+              return map.headMap(lastInclusive, true);
+          }
+        case EXCLUSIVE:
+          switch (to) {
+            case NO_BOUND:
+              return map.tailMap(firstExclusive, false);
+            case EXCLUSIVE:
+              return map.subMap(firstExclusive, false, lastExclusive, false);
+            case INCLUSIVE:
+              return map.subMap(firstExclusive, false, lastInclusive, true);
+          }
+        case INCLUSIVE:
+          switch (to) {
+            case NO_BOUND:
+              return map.tailMap(firstInclusive, true);
+            case EXCLUSIVE:
+              return map.subMap(firstInclusive, true, lastExclusive, false);
+            case INCLUSIVE:
+              return map.subMap(firstInclusive, true, lastInclusive, true);
+          }
       }
+      throw new AssertionError();
     }
   }
 

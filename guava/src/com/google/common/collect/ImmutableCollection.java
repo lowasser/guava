@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
@@ -234,6 +235,18 @@ public abstract class ImmutableCollection<E> extends AbstractCollection<E> imple
   @Deprecated
   @Override
   public final boolean removeAll(Collection<?> oldElements) {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * Guaranteed to throw an exception and leave the collection unmodified.
+   *
+   * @throws UnsupportedOperationException always
+   * @deprecated Unsupported operation.
+   */
+  @Deprecated
+  @Override
+  public final boolean removeIf(Predicate<? super E> filter) {
     throw new UnsupportedOperationException();
   }
 

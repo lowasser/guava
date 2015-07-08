@@ -36,6 +36,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.MapDifference.ValueDifference;
+import com.google.common.collect.Maps.ViewCachingAbstractMap;
 import com.google.common.primitives.Ints;
 import com.google.j2objc.annotations.Weak;
 import com.google.j2objc.annotations.WeakOuter;
@@ -62,6 +63,7 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.BiFunction;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
@@ -804,6 +806,11 @@ public final class Maps {
     }
 
     @Override
+    public V putIfAbsent(K key, V value) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
     public V remove(@Nullable Object key) {
       if (backingSet().remove(key)) {
         @SuppressWarnings("unchecked") // unsafe, but Javadoc warns about it
@@ -942,6 +949,11 @@ public final class Maps {
       } else {
         return null;
       }
+    }
+
+    @Override
+    public V putIfAbsent(K key, V value) {
+      throw new UnsupportedOperationException();
     }
 
     @Override
@@ -1490,6 +1502,54 @@ public final class Maps {
     }
 
     @Override
+    public void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public V putIfAbsent(K key, V value) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean remove(Object key, Object value) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean replace(K key, V oldValue, V newValue) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public V replace(K key, V value) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public V computeIfAbsent(
+        K key, java.util.function.Function<? super K, ? extends V> mappingFunction) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public V computeIfPresent(
+        K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public V compute(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public V merge(
+        K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
+      throw new UnsupportedOperationException();
+    }
+
+    @Override
     public BiMap<V, K> inverse() {
       BiMap<V, K> result = inverse;
       return (result == null)
@@ -1954,6 +2014,11 @@ public final class Maps {
       return (value != null || fromMap.containsKey(key))
           ? transformer.transformEntry((K) key, value)
           : null;
+    }
+
+    @Override
+    public V2 putIfAbsent(K key, V2 value) {
+      throw new UnsupportedOperationException();
     }
 
     // safe as long as the user followed the <b>Warning</b> in the javadoc
@@ -3150,15 +3215,12 @@ public final class Maps {
    * @param map the navigable map for which an unmodifiable view is to be returned
    * @return an unmodifiable view of the specified navigable map
    * @since 12.0
+   * @deprecated Prefer {@link Collections#unmodifiableNavigableMap(NavigableMap)}
    */
   @GwtIncompatible("NavigableMap")
+  @Deprecated
   public static <K, V> NavigableMap<K, V> unmodifiableNavigableMap(NavigableMap<K, V> map) {
-    checkNotNull(map);
-    if (map instanceof UnmodifiableNavigableMap) {
-      return map;
-    } else {
-      return new UnmodifiableNavigableMap<K, V>(map);
-    }
+    return Collections.unmodifiableNavigableMap(map);
   }
 
   @Nullable private static <K, V> Entry<K, V> unmodifiableOrNull(@Nullable Entry<K, V> entry) {

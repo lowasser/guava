@@ -30,7 +30,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -49,6 +55,45 @@ import javax.annotation.Nullable;
 @GwtCompatible(serializable = true, emulated = true)
 @SuppressWarnings("serial") // we're overriding default serialization
 public abstract class ImmutableMap<K, V> implements Map<K, V>, Serializable {
+  
+  /**
+   * Returns a {@link Collector} that accumulates elements into an {@code ImmutableMap} whose
+   * keys and values are the result of applying the provided mapping functions to the input 
+   * elements, in encounter order.
+   * 
+   * <p>If the mapped keys contain duplicates (according to {@link Object#equals(Object)}),
+   * an {@code IllegalArgumentException} is thrown when the collection operation is performed.
+   * If the mapped keys may have duplicates, use {@link ImmutableMap}
+   */
+  public static <T, K, V> Collector<T, ?, ImmutableMap<K, V>>
+      toImmutableMap(Function<? super T, K> keyFunction, Function<? super T, V> valueFunction) {
+    return Collector.of(
+        ImmutableMap::<K, V>builder,
+        (builder, input) -> builder.put(keyFunction.apply(input), valueFunction.apply(input)),
+        ImmutableMap.Builder::combine,
+        ImmutableMap.Builder::build);
+  }
+  
+  /**
+   * Returns a {@link Collector} that accumulates elements into an {@code ImmutableMap} whose
+   * keys and values are the result of applying the provided mapping functions to the input 
+   * elements.  Keys will appear in the result map in the order that they were first encountered in
+   * the input.
+   * 
+   * <p>If the mapped keys contain duplicates (according to {@link Object#equals(Object)}),
+   * the value mapping function is applied to the value for each equal key, and the results are
+   * merged using the provided merging function.  
+   */
+  public static <T, K, V> Collector<T, ?, ImmutableMap<K, V>>
+      toImmutableMap(
+          Function<? super T, K> keyFunction, 
+          Function<? super T, V> valueFunction,
+          BinaryOperator<V> mergeFunction) {
+    return Collectors.collectingAndThen(
+        Collectors.<T, K, V, Map<K, V>>toMap(
+            keyFunction, valueFunction, mergeFunction, LinkedHashMap::new),
+        ImmutableMap::copyOf);
+  }
 
   /**
    * Returns the empty map. This map behaves and performs comparably to
@@ -185,6 +230,13 @@ public abstract class ImmutableMap<K, V> implements Map<K, V>, Serializable {
                 entries, ImmutableCollection.Builder.expandedCapacity(entries.length, minCapacity));
         entriesUsed = false;
       }
+    }
+    
+    Builder<K, V> combine(ImmutableMap.Builder<K, V> other) {
+      ensureCapacity(this.size + other.size);
+      System.arraycopy(other.entries, 0, this.entries, this.size, other.size);
+      this.size += other.size;
+      return this;
     }
 
     /**
@@ -431,6 +483,116 @@ public abstract class ImmutableMap<K, V> implements Map<K, V>, Serializable {
     throw new UnsupportedOperationException();
   }
 
+  /**
+   * Guaranteed to throw an exception and leave the map unmodified.
+   *
+   * @throws UnsupportedOperationException always
+   * @deprecated Unsupported operation.
+   */
+  @Deprecated
+  @Override
+  public final void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * Guaranteed to throw an exception and leave the map unmodified.
+   *
+   * @throws UnsupportedOperationException always
+   * @deprecated Unsupported operation.
+   */
+  @Deprecated
+  @Override
+  public final V putIfAbsent(K key, V value) {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * Guaranteed to throw an exception and leave the map unmodified.
+   *
+   * @throws UnsupportedOperationException always
+   * @deprecated Unsupported operation.
+   */
+  @Deprecated
+  @Override
+  public final boolean remove(Object key, Object value) {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * Guaranteed to throw an exception and leave the map unmodified.
+   *
+   * @throws UnsupportedOperationException always
+   * @deprecated Unsupported operation.
+   */
+  @Deprecated
+  @Override
+  public final boolean replace(K key, V oldValue, V newValue) {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * Guaranteed to throw an exception and leave the map unmodified.
+   *
+   * @throws UnsupportedOperationException always
+   * @deprecated Unsupported operation.
+   */
+  @Deprecated
+  @Override
+  public final V replace(K key, V value) {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * Guaranteed to throw an exception and leave the map unmodified.
+   *
+   * @throws UnsupportedOperationException always
+   * @deprecated Unsupported operation.
+   */
+  @Deprecated
+  @Override
+  public final V computeIfAbsent(K key, Function<? super K, ? extends V> mappingFunction) {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * Guaranteed to throw an exception and leave the map unmodified.
+   *
+   * @throws UnsupportedOperationException always
+   * @deprecated Unsupported operation.
+   */
+  @Deprecated
+  @Override
+  public final V computeIfPresent(
+      K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * Guaranteed to throw an exception and leave the map unmodified.
+   *
+   * @throws UnsupportedOperationException always
+   * @deprecated Unsupported operation.
+   */
+  @Deprecated
+  @Override
+  public final V compute(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * Guaranteed to throw an exception and leave the map unmodified.
+   *
+   * @throws UnsupportedOperationException always
+   * @deprecated Unsupported operation.
+   */
+  @Deprecated
+  @Override
+  public final V merge(
+      K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
+    throw new UnsupportedOperationException();
+  }
+
   @Override
   public boolean isEmpty() {
     return size() == 0;
@@ -449,6 +611,12 @@ public abstract class ImmutableMap<K, V> implements Map<K, V>, Serializable {
   // Overriding to mark it Nullable
   @Override
   public abstract V get(@Nullable Object key);
+
+  @Override
+  public final V getOrDefault(@Nullable Object key, @Nullable V defaultValue) {
+    V result = get(key);
+    return (result == null) ? defaultValue : result;
+  }
 
   private transient ImmutableSet<Entry<K, V>> entrySet;
 

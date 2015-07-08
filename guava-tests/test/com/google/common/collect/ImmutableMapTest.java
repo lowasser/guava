@@ -16,6 +16,7 @@
 
 package com.google.common.collect;
 
+import static com.google.common.collect.testing.Helpers.mapEntry;
 import static com.google.common.testing.SerializableTester.reserialize;
 
 import com.google.common.annotations.GwtCompatible;
@@ -42,6 +43,7 @@ import com.google.common.collect.testing.google.MapGenerators.ImmutableMapGenera
 import com.google.common.collect.testing.google.MapGenerators.ImmutableMapKeyListGenerator;
 import com.google.common.collect.testing.google.MapGenerators.ImmutableMapUnhashableValuesGenerator;
 import com.google.common.collect.testing.google.MapGenerators.ImmutableMapValueListGenerator;
+import com.google.common.testing.CollectorTester;
 import com.google.common.testing.EqualsTester;
 import com.google.common.testing.NullPointerTester;
 import com.google.common.testing.SerializableTester;
@@ -57,6 +59,9 @@ import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.BiPredicate;
+import java.util.stream.Collector;
+import java.util.stream.Stream;
 
 /**
  * Tests for {@link ImmutableMap}.
@@ -603,6 +608,41 @@ public class ImmutableMapTest extends TestCase {
       ImmutableMap<String, Integer> copy = ImmutableMap.copyOf(original);
       assertMapEquals(copy, "one", 1, "two", 2, "three", 3);
       assertSame(copy, ImmutableMap.copyOf(copy));
+    }
+    
+    public void testToImmutableMap() {
+      Collector<Entry<String, Integer>, ?, ImmutableMap<String, Integer>> collector =
+          ImmutableMap.toImmutableMap(
+              Entry<String, Integer>::getKey, Entry<String, Integer>::getValue);
+      BiPredicate<ImmutableMap<String, Integer>, ImmutableMap<String, Integer>> equivalence =
+          (map1, map2) -> 
+              map1.equals(map2) && map1.entrySet().asList().equals(map2.entrySet().asList());
+      CollectorTester.of(collector, equivalence)
+          .expectCollects(ImmutableMap.of("one", 1, "two", 2, "three", 3),
+              mapEntry("one", 1), mapEntry("two", 2), mapEntry("three", 3));
+    }
+    
+    public void testToImmutableMap_duplicateKeys() {
+      Collector<Entry<String, Integer>, ?, ImmutableMap<String, Integer>> collector =
+          ImmutableMap.toImmutableMap(
+              Entry<String, Integer>::getKey, Entry<String, Integer>::getValue);
+      try {
+        Stream.of(mapEntry("one", 1), mapEntry("one", 1))
+            .collect(collector);
+        fail("Expected IllegalArgumentException");
+      } catch (IllegalArgumentException expected) {}
+    }
+    
+    public void testToImmutableMapMerging() {
+      Collector<Entry<String, Integer>, ?, ImmutableMap<String, Integer>> collector =
+          ImmutableMap.toImmutableMap(
+              Entry<String, Integer>::getKey, Entry<String, Integer>::getValue, Integer::sum);
+      BiPredicate<ImmutableMap<String, Integer>, ImmutableMap<String, Integer>> equivalence =
+          (map1, map2) -> 
+              map1.equals(map2) && map1.entrySet().asList().equals(map2.entrySet().asList());
+      CollectorTester.of(collector, equivalence)
+          .expectCollects(ImmutableMap.of("one", 11, "two", 2, "three", 3),
+              mapEntry("one", 1), mapEntry("two", 2), mapEntry("three", 3), mapEntry("one", 10));
     }
   }
 

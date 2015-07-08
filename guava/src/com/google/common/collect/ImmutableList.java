@@ -30,10 +30,12 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.RandomAccess;
 import java.util.Spliterator;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collector;
 
 import javax.annotation.Nullable;
@@ -56,6 +58,10 @@ import javax.annotation.Nullable;
 public abstract class ImmutableList<E> extends ImmutableCollection<E>
     implements List<E>, RandomAccess {
   
+  /**
+   * Returns a {@link Collector} that accumulates the input elements into an {@code ImmutableList},
+   * in encounter order.
+   */
   public static <E> Collector<E, ?, ImmutableList<E>> toImmutableList() {
     // TODO(lowasser): consider making this a singleton
     return Collector.of(
@@ -484,6 +490,30 @@ public abstract class ImmutableList<E> extends ImmutableCollection<E>
   @Deprecated
   @Override
   public final E remove(int index) {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * Guaranteed to throw an exception and leave the list unmodified.
+   *
+   * @throws UnsupportedOperationException always
+   * @deprecated Unsupported operation.
+   */
+  @Deprecated
+  @Override
+  public final void replaceAll(UnaryOperator<E> operator) {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * Guaranteed to throw an exception and leave the list unmodified.
+   *
+   * @throws UnsupportedOperationException always
+   * @deprecated Unsupported operation.
+   */
+  @Deprecated
+  @Override
+  public final void sort(Comparator<? super E> c) {
     throw new UnsupportedOperationException();
   }
 
