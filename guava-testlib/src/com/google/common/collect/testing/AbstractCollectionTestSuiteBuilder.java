@@ -31,6 +31,7 @@ import com.google.common.collect.testing.testers.CollectionRetainAllTester;
 import com.google.common.collect.testing.testers.CollectionSerializationTester;
 import com.google.common.collect.testing.testers.CollectionSizeTester;
 import com.google.common.collect.testing.testers.CollectionSpliteratorTester;
+import com.google.common.collect.testing.testers.CollectionStreamTester;
 import com.google.common.collect.testing.testers.CollectionToArrayTester;
 import com.google.common.collect.testing.testers.CollectionToStringTester;
 
@@ -69,6 +70,7 @@ public abstract class AbstractCollectionTestSuiteBuilder<
         CollectionSerializationTester.class,
         CollectionSizeTester.class,
         CollectionSpliteratorTester.class,
+        CollectionStreamTester.class,
         CollectionToArrayTester.class,
         CollectionToStringTester.class
     );
