@@ -37,6 +37,7 @@ import com.google.common.collect.testing.testers.ListListIteratorTester;
 import com.google.common.collect.testing.testers.ListRemoveAllTester;
 import com.google.common.collect.testing.testers.ListRemoveAtIndexTester;
 import com.google.common.collect.testing.testers.ListRemoveTester;
+import com.google.common.collect.testing.testers.ListReplaceAllTester;
 import com.google.common.collect.testing.testers.ListRetainAllTester;
 import com.google.common.collect.testing.testers.ListSetTester;
 import com.google.common.collect.testing.testers.ListSubListTester;
@@ -83,6 +84,7 @@ public final class ListTestSuiteBuilder<E> extends
     testers.add(ListRemoveAllTester.class);
     testers.add(ListRemoveAtIndexTester.class);
     testers.add(ListRemoveTester.class);
+    testers.add(ListReplaceAllTester.class);
     testers.add(ListRetainAllTester.class);
     testers.add(ListSetTester.class);
     testers.add(ListSubListTester.class);
