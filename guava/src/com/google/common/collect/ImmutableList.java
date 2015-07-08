@@ -24,6 +24,8 @@ import static com.google.common.collect.ObjectArrays.checkElementsNotNull;
 import static com.google.common.collect.RegularImmutableList.EMPTY;
 
 import com.google.common.annotations.GwtCompatible;
+import com.google.common.collect.ImmutableCollection.ArrayBasedBuilder;
+import com.google.common.collect.ImmutableCollection.Builder;
 
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
@@ -33,6 +35,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.RandomAccess;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -53,6 +57,16 @@ import javax.annotation.Nullable;
 @SuppressWarnings("serial") // we're overriding default serialization
 public abstract class ImmutableList<E> extends ImmutableCollection<E>
     implements List<E>, RandomAccess {
+  
+  public static <E> Collector<E, ?, ImmutableList<E>> toImmutableList() {
+    // TODO(lowasser): consider making this a singleton
+    return Collector.of(
+        ImmutableList::<E>builder, 
+        ImmutableList.Builder::add,
+        ImmutableList.Builder::combine,
+        ImmutableList.Builder::build);
+  }
+  
   /**
    * Returns the empty immutable list. This set behaves and performs comparably
    * to {@link Collections#emptyList}, and is preferable mainly for consistency
@@ -697,6 +711,12 @@ public abstract class ImmutableList<E> extends ImmutableCollection<E>
     @Override
     public Builder<E> addAll(Iterator<? extends E> elements) {
       super.addAll(elements);
+      return this;
+    }
+
+    @Override
+    Builder<E> combine(ArrayBasedBuilder<E> builder) {
+      super.combine(builder);
       return this;
     }
 

@@ -443,6 +443,14 @@ public abstract class ImmutableCollection<E> extends AbstractCollection<E> imple
                 this.contents, expandedCapacity(contents.length, minCapacity));
       }
     }
+    
+    Builder<E> combine(ArrayBasedBuilder<E> builder) {
+      checkNotNull(builder);
+      ensureCapacity(this.size + builder.size);
+      System.arraycopy(builder.contents, 0, this.contents, this.size, builder.size);
+      this.size += builder.size;
+      return this;
+    }
 
     @Override
     public ArrayBasedBuilder<E> add(E element) {
