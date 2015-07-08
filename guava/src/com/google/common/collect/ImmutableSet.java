@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.stream.Collector;
 
 import javax.annotation.Nullable;
 
@@ -42,6 +43,23 @@ import javax.annotation.Nullable;
 @GwtCompatible(serializable = true, emulated = true)
 @SuppressWarnings("serial") // we're overriding default serialization
 public abstract class ImmutableSet<E> extends ImmutableCollection<E> implements Set<E> {
+  
+  /**
+   * Returns a {@link Collector} that accumulates the input elements into an {@code ImmutableSet},
+   * in encounter order.  
+   * 
+   * <p>If an element appears more than once in the input, it will appear only once in the returned
+   * {@code ImmutableSet}, in encounter order of the first appearance of that element.
+   */
+  public static <E> Collector<E, ?, ImmutableSet<E>> toImmutableSet() {
+    // TODO(lowasser): consider making this a singleton
+    return Collector.of(
+        ImmutableSet::<E>builder,
+        ImmutableSet.Builder::add,
+        ImmutableSet.Builder::combine,
+        ImmutableSet.Builder::build);
+  }
+  
   /**
    * Returns the empty immutable set. Preferred over {@link Collections#emptySet} for code
    * consistency, and because the return type conveys the immutability guarantee.
@@ -421,6 +439,12 @@ public abstract class ImmutableSet<E> extends ImmutableCollection<E> implements 
 
     Builder(int capacity) {
       super(capacity);
+    }
+
+    @Override
+    Builder<E> combine(ArrayBasedBuilder<E> builder) {
+      super.combine(builder);
+      return this;
     }
 
     /**
