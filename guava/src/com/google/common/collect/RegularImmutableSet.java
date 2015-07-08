@@ -16,8 +16,12 @@
 
 package com.google.common.collect;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.VisibleForTesting;
+
+import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 
@@ -72,6 +76,16 @@ final class RegularImmutableSet<E> extends ImmutableSet<E> {
   @Override
   public UnmodifiableIterator<E> iterator() {
     return (UnmodifiableIterator<E>) Iterators.forArray(elements);
+  }
+
+  @Override
+  public void forEach(Consumer<? super E> action) {
+    checkNotNull(action);
+    for (Object element : table) {
+      @SuppressWarnings("unchecked")
+      E e = (E) element;
+      action.accept(e);
+    }
   }
 
   @Override

@@ -16,8 +16,12 @@
 
 package com.google.common.collect;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.base.Preconditions;
+
+import java.util.function.Consumer;
 
 /**
  * Implementation of {@link ImmutableSet} with exactly one element.
@@ -52,6 +56,11 @@ final class SingletonImmutableSet<E> extends ImmutableSet<E> {
   @Override
   public int size() {
     return 1;
+  }
+
+  @Override
+  public void forEach(Consumer<? super E> action) {
+    checkNotNull(action).accept(element);
   }
 
   @Override public boolean contains(Object target) {
