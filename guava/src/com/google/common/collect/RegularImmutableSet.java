@@ -19,6 +19,9 @@ package com.google.common.collect;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.VisibleForTesting;
 
+import java.util.Spliterator;
+import java.util.Spliterators;
+
 import javax.annotation.Nullable;
 
 /**
@@ -72,6 +75,11 @@ final class RegularImmutableSet<E> extends ImmutableSet<E> {
   @Override
   public UnmodifiableIterator<E> iterator() {
     return (UnmodifiableIterator<E>) Iterators.forArray(elements);
+  }
+
+  @Override
+  public Spliterator<E> spliterator() {
+    return Spliterators.spliterator(elements, ImmutableSet.SPLITERATOR_CHARACTERISTICS);
   }
 
   @Override

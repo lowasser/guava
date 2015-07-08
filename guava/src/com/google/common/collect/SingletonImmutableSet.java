@@ -19,6 +19,8 @@ package com.google.common.collect;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.base.Preconditions;
 
+import java.util.Spliterator;
+
 /**
  * Implementation of {@link ImmutableSet} with exactly one element.
  *
@@ -60,6 +62,11 @@ final class SingletonImmutableSet<E> extends ImmutableSet<E> {
 
   @Override public UnmodifiableIterator<E> iterator() {
     return Iterators.singletonIterator(element);
+  }
+
+  @Override
+  public Spliterator<E> spliterator() {
+    return new SingletonSpliterator<E>(element);
   }
 
   @Override boolean isPartialView() {

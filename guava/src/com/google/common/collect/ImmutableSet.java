@@ -30,6 +30,8 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.stream.Collector;
 
 import javax.annotation.Nullable;
@@ -43,6 +45,8 @@ import javax.annotation.Nullable;
 @GwtCompatible(serializable = true, emulated = true)
 @SuppressWarnings("serial") // we're overriding default serialization
 public abstract class ImmutableSet<E> extends ImmutableCollection<E> implements Set<E> {
+  static final int SPLITERATOR_CHARACTERISTICS =
+      ImmutableCollection.SPLITERATOR_CHARACTERISTICS | Spliterator.DISTINCT;
   
   /**
    * Returns a {@link Collector} that accumulates the input elements into an {@code ImmutableSet},
@@ -353,7 +357,13 @@ public abstract class ImmutableSet<E> extends ImmutableCollection<E> implements 
   @Override
   public abstract UnmodifiableIterator<E> iterator();
 
+  @Override
+  public Spliterator<E> spliterator() {
+    return Spliterators.spliterator(this, SPLITERATOR_CHARACTERISTICS);
+  }
+
   abstract static class Indexed<E> extends ImmutableSet<E> {
+
     abstract E get(int index);
 
     @Override
@@ -362,11 +372,22 @@ public abstract class ImmutableSet<E> extends ImmutableCollection<E> implements 
     }
 
     @Override
+    public Spliterator<E> spliterator() {
+      return new IndexedSpliterator<E>(
+          size(), this::get, ImmutableSet.SPLITERATOR_CHARACTERISTICS);
+    }
+
+    @Override
     ImmutableList<E> createAsList() {
       return new ImmutableAsList<E>() {
         @Override
         public E get(int index) {
           return Indexed.this.get(index);
+        }
+
+        @Override
+        public Spliterator<E> spliterator() {
+          return Indexed.this.spliterator();
         }
 
         @Override
