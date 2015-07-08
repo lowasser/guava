@@ -24,8 +24,6 @@ import static com.google.common.collect.ObjectArrays.checkElementsNotNull;
 import static com.google.common.collect.RegularImmutableList.EMPTY;
 
 import com.google.common.annotations.GwtCompatible;
-import com.google.common.collect.ImmutableCollection.ArrayBasedBuilder;
-import com.google.common.collect.ImmutableCollection.Builder;
 
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
@@ -38,7 +36,6 @@ import java.util.List;
 import java.util.RandomAccess;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -60,6 +57,10 @@ import javax.annotation.Nullable;
 public abstract class ImmutableList<E> extends ImmutableCollection<E>
     implements List<E>, RandomAccess {
   
+  /**
+   * Returns a {@link Collector} that accumulates the input elements into an {@code ImmutableList},
+   * in encounter order.
+   */
   public static <E> Collector<E, ?, ImmutableList<E>> toImmutableList() {
     // TODO(lowasser): consider making this a singleton
     return Collector.of(
