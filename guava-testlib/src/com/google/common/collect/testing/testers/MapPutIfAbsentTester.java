@@ -27,21 +27,16 @@ import com.google.common.collect.testing.features.CollectionSize;
 import com.google.common.collect.testing.features.MapFeature;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentMap;
 
 /**
- * A generic JUnit test which tests {@code putIfAbsent} operations on a concurrent map. Can't be
+ * A generic JUnit test which tests {@link Map#putIfAbsent}. Can't be
  * invoked directly; please see
- * {@link com.google.common.collect.testing.ConcurrentMapTestSuiteBuilder}.
+ * {@link com.google.common.collect.testing.MapTestSuiteBuilder}.
  * 
  * @author Louis Wasserman
  */
 @GwtCompatible
-public class ConcurrentMapPutIfAbsentTester<K, V> extends AbstractMapTester<K, V> {
-  @Override
-  protected ConcurrentMap<K, V> getMap() {
-    return (ConcurrentMap<K, V>) super.getMap();
-  }
+public class MapPutIfAbsentTester<K, V> extends AbstractMapTester<K, V> {
 
   @MapFeature.Require(SUPPORTS_PUT)
   public void testPutIfAbsent_supportedAbsent() {
