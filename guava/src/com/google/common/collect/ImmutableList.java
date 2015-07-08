@@ -32,9 +32,11 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.RandomAccess;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -479,6 +481,30 @@ public abstract class ImmutableList<E> extends ImmutableCollection<E>
   @Deprecated
   @Override
   public final E remove(int index) {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * Guaranteed to throw an exception and leave the list unmodified.
+   *
+   * @throws UnsupportedOperationException always
+   * @deprecated Unsupported operation.
+   */
+  @Deprecated
+  @Override
+  public final void replaceAll(UnaryOperator<E> operator) {
+    throw new UnsupportedOperationException();
+  }
+
+  /**
+   * Guaranteed to throw an exception and leave the list unmodified.
+   *
+   * @throws UnsupportedOperationException always
+   * @deprecated Unsupported operation.
+   */
+  @Deprecated
+  @Override
+  public final void sort(Comparator<? super E> c) {
     throw new UnsupportedOperationException();
   }
 
