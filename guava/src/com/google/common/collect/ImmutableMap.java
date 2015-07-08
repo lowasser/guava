@@ -612,6 +612,12 @@ public abstract class ImmutableMap<K, V> implements Map<K, V>, Serializable {
   @Override
   public abstract V get(@Nullable Object key);
 
+  @Override
+  public final V getOrDefault(@Nullable Object key, @Nullable V defaultValue) {
+    V result = get(key);
+    return (result == null) ? defaultValue : result;
+  }
+
   private transient ImmutableSet<Entry<K, V>> entrySet;
 
   /**
