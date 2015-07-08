@@ -21,6 +21,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.base.Preconditions;
 
+import java.util.function.Consumer;
+
 /**
  * Implementation of {@link ImmutableList} with exactly one element.
  *
@@ -40,6 +42,11 @@ final class SingletonImmutableList<E> extends ImmutableList<E> {
   public E get(int index) {
     Preconditions.checkElementIndex(index, 1);
     return element;
+  }
+
+  @Override
+  public void forEach(Consumer<? super E> action) {
+    checkNotNull(action).accept(element);
   }
 
   @Override public UnmodifiableIterator<E> iterator() {

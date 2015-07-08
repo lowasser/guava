@@ -16,8 +16,12 @@
 
 package com.google.common.collect;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.base.Preconditions;
+
+import java.util.function.Consumer;
 
 /**
  * Implementation of {@link ImmutableList} used for 0 or 2+ elements (not 1).
@@ -65,6 +69,16 @@ class RegularImmutableList<E> extends ImmutableList<E> {
   public E get(int index) {
     Preconditions.checkElementIndex(index, size);
     return (E) array[index + offset];
+  }
+
+  @Override
+  public void forEach(Consumer<? super E> action) {
+    checkNotNull(action);
+    for (int i = 0; i < size; i++) {
+      @SuppressWarnings("unchecked")
+      E element = (E) array[i + offset];
+      action.accept(element);
+    }
   }
 
   @Override

@@ -34,6 +34,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.RandomAccess;
+import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collector;
 
@@ -333,6 +334,14 @@ public abstract class ImmutableList<E> extends ImmutableCollection<E>
   }
 
   ImmutableList() {}
+
+  @Override
+  public void forEach(Consumer<? super E> action) {
+    checkNotNull(action);
+    for (int i = 0; i < size(); i++) {
+      action.accept(get(i));
+    }
+  }
 
   // This declaration is needed to make List.iterator() and
   // ImmutableCollection.iterator() consistent.
