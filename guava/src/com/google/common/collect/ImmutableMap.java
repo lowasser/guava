@@ -593,37 +593,16 @@ public abstract class ImmutableMap<K, V> implements Map<K, V>, Serializable {
     throw new UnsupportedOperationException();
   }
 
-  /**
-   * Guaranteed to throw an exception and leave the map unmodified.
-   *
-   * @throws UnsupportedOperationException always
-   * @deprecated Unsupported operation.
-   */
-  @Deprecated
   @Override
   public boolean isEmpty() {
     return size() == 0;
   }
 
-  /**
-   * Guaranteed to throw an exception and leave the map unmodified.
-   *
-   * @throws UnsupportedOperationException always
-   * @deprecated Unsupported operation.
-   */
-  @Deprecated
   @Override
   public boolean containsKey(@Nullable Object key) {
     return get(key) != null;
   }
 
-  /**
-   * Guaranteed to throw an exception and leave the map unmodified.
-   *
-   * @throws UnsupportedOperationException always
-   * @deprecated Unsupported operation.
-   */
-  @Deprecated
   @Override
   public boolean containsValue(@Nullable Object value) {
     return values().contains(value);
