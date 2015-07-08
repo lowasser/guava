@@ -29,6 +29,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
@@ -154,6 +156,8 @@ import javax.annotation.Nullable;
 // TODO(kevinb): I think we should push everything down to "BaseImmutableCollection" or something,
 // just to do everything we can to emphasize the "practically an interface" nature of this class.
 public abstract class ImmutableCollection<E> extends AbstractCollection<E> implements Serializable {
+  static final int SPLITERATOR_CHARACTERISTICS = Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.ORDERED
+      | Spliterator.SIZED;
 
   ImmutableCollection() {}
 
@@ -162,6 +166,11 @@ public abstract class ImmutableCollection<E> extends AbstractCollection<E> imple
    */
   @Override
   public abstract UnmodifiableIterator<E> iterator();
+
+  @Override
+  public Spliterator<E> spliterator() {
+    return Spliterators.spliterator(this, SPLITERATOR_CHARACTERISTICS);
+  }
 
   @Override
   public final Object[] toArray() {

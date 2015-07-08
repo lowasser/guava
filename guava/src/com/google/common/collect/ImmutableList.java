@@ -58,6 +58,8 @@ import javax.annotation.Nullable;
 public abstract class ImmutableList<E> extends ImmutableCollection<E>
     implements List<E>, RandomAccess {
   
+  static final int SPLITERATOR_CHARACTERISTICS = ImmutableCollection.SPLITERATOR_CHARACTERISTICS;
+  
   /**
    * Returns a {@link Collector} that accumulates the input elements into an {@code ImmutableList},
    * in encounter order.
@@ -359,9 +361,7 @@ public abstract class ImmutableList<E> extends ImmutableCollection<E>
 
   @Override
   public Spliterator<E> spliterator() {
-    return new IndexedSpliterator<E>(size(), this::get, 
-        Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.ORDERED
-            | Spliterator.SUBSIZED | Spliterator.SIZED);
+    return new IndexedSpliterator<E>(size(), this::get, SPLITERATOR_CHARACTERISTICS);
   }
 
   @Override

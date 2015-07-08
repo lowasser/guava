@@ -41,7 +41,7 @@ final class IndexedSpliterator<E> implements Spliterator<E> {
     this.length = length;
     this.indexFunction = indexFunction;
     this.comparator = comparator;
-    this.characteristics = characteristics;
+    this.characteristics = characteristics | Spliterator.SIZED | Spliterator.SUBSIZED;
   }
 
   IndexedSpliterator(int length, IntFunction<E> indexFunction, Comparator<? super E> comparator,

@@ -74,8 +74,7 @@ class RegularImmutableList<E> extends ImmutableList<E> {
   public Spliterator<E> spliterator() {
     // TODO(lowasser): consider a singleton empty spliterator
     return Spliterators.spliterator(array, offset, offset + size,
-        Spliterator.IMMUTABLE | Spliterator.NONNULL | Spliterator.ORDERED | Spliterator.SIZED
-        | Spliterator.SUBSIZED);
+        ImmutableList.SPLITERATOR_CHARACTERISTICS);
   }
 
   @Override
