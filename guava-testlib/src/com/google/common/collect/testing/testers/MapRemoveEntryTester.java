@@ -26,20 +26,16 @@ import com.google.common.collect.testing.AbstractMapTester;
 import com.google.common.collect.testing.features.CollectionSize;
 import com.google.common.collect.testing.features.MapFeature;
 
-import java.util.concurrent.ConcurrentMap;
+import java.util.Map;
 
 /**
- * Tester for {@link ConcurrentMap#remove}.  Can't be invoked directly; please see 
- * {@link com.google.common.collect.testing.ConcurrentMapTestSuiteBuilder}. 
+ * Tester for {@link Map#remove(Object, Object)}.  Can't be invoked directly; please see 
+ * {@link com.google.common.collect.testing.MapTestSuiteBuilder}. 
  *
  * @author Louis Wasserman
  */
 @GwtCompatible
-public class ConcurrentMapRemoveTester<K, V> extends AbstractMapTester<K, V> {
-  @Override
-  protected ConcurrentMap<K, V> getMap() {
-    return (ConcurrentMap<K, V>) super.getMap();
-  }
+public class MapRemoveEntryTester<K, V> extends AbstractMapTester<K, V> {
 
   @MapFeature.Require(SUPPORTS_REMOVE)
   @CollectionSize.Require(absent = ZERO)

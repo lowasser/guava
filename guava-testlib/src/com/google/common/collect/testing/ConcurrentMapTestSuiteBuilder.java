@@ -14,7 +14,6 @@
 
 package com.google.common.collect.testing;
 
-import com.google.common.collect.testing.testers.ConcurrentMapRemoveTester;
 import com.google.common.collect.testing.testers.ConcurrentMapReplaceEntryTester;
 import com.google.common.collect.testing.testers.ConcurrentMapReplaceTester;
 
@@ -37,7 +36,6 @@ public class ConcurrentMapTestSuiteBuilder<K, V> extends MapTestSuiteBuilder<K, 
   
   static final List<? extends Class<? extends AbstractTester>> TESTERS = 
       Arrays.asList(
-          ConcurrentMapRemoveTester.class,
           ConcurrentMapReplaceTester.class,
           ConcurrentMapReplaceEntryTester.class);
   
