@@ -16,9 +16,12 @@
 
 package com.google.common.collect;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.CollectPreconditions.checkEntryNotNull;
 
 import com.google.common.annotations.GwtCompatible;
+
+import java.util.function.BiConsumer;
 
 import javax.annotation.Nullable;
 
@@ -72,6 +75,11 @@ final class SingletonImmutableBiMap<K, V> extends ImmutableBiMap<K, V> {
   @Override
   ImmutableSet<Entry<K, V>> createEntrySet() {
     return ImmutableSet.of(Maps.immutableEntry(singleKey, singleValue));
+  }
+
+  @Override
+  public void forEach(BiConsumer<? super K, ? super V> action) {
+    checkNotNull(action).accept(singleKey, singleValue);
   }
 
   @Override

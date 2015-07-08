@@ -16,12 +16,15 @@
 
 package com.google.common.collect;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndex;
 import static com.google.common.collect.CollectPreconditions.checkEntryNotNull;
 import static com.google.common.collect.ImmutableMapEntry.createEntryArray;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.collect.ImmutableMapEntry.NonTerminalImmutableMapEntry;
+
+import java.util.function.BiConsumer;
 
 import javax.annotation.Nullable;
 
@@ -133,6 +136,14 @@ final class RegularImmutableMap<K, V> extends ImmutableMap<K, V> {
       }
     }
     return null;
+  }
+
+  @Override
+  public void forEach(BiConsumer<? super K, ? super V> action) {
+    checkNotNull(action);
+    for (Entry<K, V> entry : entries) {
+      action.accept(entry.getKey(), entry.getValue());
+    }
   }
 
   @Override

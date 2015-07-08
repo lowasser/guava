@@ -16,6 +16,7 @@
 
 package com.google.common.collect;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndex;
 import static com.google.common.collect.CollectPreconditions.checkEntryNotNull;
 import static com.google.common.collect.ImmutableMapEntry.createEntryArray;
@@ -26,6 +27,7 @@ import com.google.common.collect.ImmutableMapEntry.NonTerminalImmutableBiMapEntr
 import com.google.j2objc.annotations.WeakOuter;
 
 import java.io.Serializable;
+import java.util.function.BiConsumer;
 
 import javax.annotation.Nullable;
 
@@ -136,6 +138,14 @@ class RegularImmutableBiMap<K, V> extends ImmutableBiMap<K, V> {
     return isEmpty()
         ? ImmutableSet.<Entry<K, V>>of()
         : new ImmutableMapEntrySet.RegularEntrySet<K, V>(this, entries);
+  }
+
+  @Override
+  public void forEach(BiConsumer<? super K, ? super V> action) {
+    checkNotNull(action);
+    for (Entry<K, V> entry : entries) {
+      action.accept(entry.getKey(), entry.getValue());
+    }
   }
 
   @Override
